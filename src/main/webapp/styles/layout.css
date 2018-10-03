@@ -1,0 +1,63 @@
+body {
+    width: auto;
+    font-family: Verdana;
+}
+
+#headerlogo {
+    float: left;
+    margin-right: 10px;
+}
+
+#headerlogo > img {
+    height: 60px;
+    width: 130px;
+}
+
+#headername {
+    font-size: 40px;
+    font-family: "Times New Roman";
+    color: #603813;
+    padding: 15px;
+    margin: 8px 0px;
+    font-weight: bold;
+}
+
+nav {
+    height: 45px;
+    width: 100%;
+    margin-bottom: 5px;
+    margin-top: 20px;
+    padding-left: 5px;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    display: block;
+}
+
+.backgroundgradient {
+    background: linear-gradient(to right,#603813,#341c05);
+}
+
+.navlink {
+    height: 35px;
+    margin-right: 10px;
+    font-size: 18px;
+    float: left;
+    padding-top: 12px;
+    color: white;
+    text-decoration: none;
+}
+
+.float-right{
+	float:right;
+}
+
+#footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
