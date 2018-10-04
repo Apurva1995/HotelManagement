@@ -14,11 +14,11 @@
 	</div>
 	<nav id="navigation" class="backgroundgradient">
 		<ul>
-			<li><a class="navlink" href="index.jsp">Home</a></li>
-			<c:if test="${sessionScope.user == null}">
-				<li> <a id="login" class="navlink float-right" href="login.jsp">Login</a></li>
-				<li> <a id="signup" class="navlink float-right" href="register.jsp">Sign Up</a></li>
-			</c:if>
+			<li><a class="navlink" href="index">Home</a></li>
+			<%-- <c:if test="${sessionScope.user == null}"> --%>
+				<li> <a id="login" class="navlink float-right" href="login">Login</a></li>
+				<li> <a id="signup" class="navlink float-right" href="register">Sign Up</a></li>
+			<%-- </c:if> --%>
 			<%-- <c:if test="{not empty sessionScope.user}">
 				<li class="navlink_right">welcome : ${sessionScope.user.userName }</li>
 				<li class="navlink_right"><a class="navlink_right" href="logout">Logout</a></li>

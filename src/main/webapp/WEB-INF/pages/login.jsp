@@ -10,7 +10,7 @@
 
 	<%@include file="header.jsp"%>
 	<center>
-		<form action="login" method="post">
+		<form action="controller/user/login" method="post">
 			<h3>
 				<table border="2">
 					<tr>
