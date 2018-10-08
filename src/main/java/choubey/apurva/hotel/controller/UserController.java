@@ -26,10 +26,16 @@ public class UserController {
 			writer = response.getWriter();
 			session = request.getSession();
 
-			String userId = request.getParameter("userId");
+			String email = request.getParameter("email");
 			String password = request.getParameter("password");
-			User user = userService.authenticate(userId, password);
-
+			User user = null;
+			try {
+				user = userService.authenticate(email, password);
+				session.setAttribute("user", user);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				System.out.println("Something went wrong while authentication");
+			}
 			if (user != null) {
 				session.setAttribute("user", user);
 				request.getRequestDispatcher("/index").forward(request, response);
@@ -64,9 +70,11 @@ public class UserController {
 			String sex = request.getParameter("sex");
 			String aadharNumber = request.getParameter("aadharNumber");
 			User user = new User(userName, password, email, mobileNumber, (short) 0, sex, age, aadharNumber);
+			System.out.println(user);
 			boolean value = false;
 			try {
 				value = userService.save(user);
+				System.out.println(value);
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				System.out.println("Something went wrong while saving data to database");

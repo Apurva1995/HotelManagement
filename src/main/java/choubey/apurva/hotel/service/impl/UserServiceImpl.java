@@ -10,9 +10,9 @@ public class UserServiceImpl implements UserService{
 	private UserDao userDao = new UserDaoImpl();
 	
 	@Override
-	public User authenticate(String userId, String password) {
+	public User authenticate(String email, String password) {
 		
-		return userDao.authenticate(userId, password);
+		return userDao.authenticate(email, password);
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public User authenticate(String email, String password) {
 
-		String query = "select * from User where email = ? and password = ?";
+		String query = "select * from user where email = ? and password = ?";
 
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public boolean save(User user) {
 
-		String query = "insert into User(aadharNumber, name, password, email, mobile, sex, age, isAdmin) values(?,?,?,?,?,?,?,?)";
+		String query = "insert into user(aadharNumber, name, password, email, mobile, sex, age, isAdmin) values(?,?,?,?,?,?,?,?)";
 
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -62,8 +62,10 @@ public class UserDaoImpl implements UserDao {
 			preparedStatement.setString(6, user.getSex());
 			preparedStatement.setDouble(7, user.getAge());
 			preparedStatement.setShort(8, user.getIsAdmin());
-
-			return preparedStatement.execute();
+			
+			if(preparedStatement.executeUpdate() == 1)
+				return true;
+				
 
 		} catch (SQLException exception) {
 

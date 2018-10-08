@@ -10,7 +10,7 @@ public class DBConnectionProvider {
 		
 		Connection connection = null;
 		
-		String dbUrl = "jdbc:mysql://localhost:3306/EMP";
+		String dbUrl = "jdbc:mysql://localhost:3306/hotelmanagement";
 		String user = "root";
 		String password = "root";
 		

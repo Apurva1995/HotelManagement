@@ -24,7 +24,27 @@ public class ServiceFrontController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		String methodName;
+		String requestPath = request.getRequestURI();
+		methodName = requestPath.substring(requestPath.lastIndexOf('/') + 1);
+		requestPath = requestPath.substring(0, requestPath.lastIndexOf('/'));
+		requestPath = requestPath.substring(requestPath.lastIndexOf('/') + 1);
+		
+		response.setContentType("text/html");
+		
+		if ("user".equals(requestPath)) {
+			switch (methodName) {
+
+			case "login":
+				request.getRequestDispatcher("/index").forward(request, response);
+				break;
+			case "register":
+				request.getRequestDispatcher("/register").forward(request, response);
+				break;
+			}
+		}
+		
 	}
 
 	@Override
