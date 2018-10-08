@@ -15,9 +15,9 @@ import choubey.apurva.hotel.service.impl.UserServiceImpl;
 public class UserController {
 
 	private UserService userService = new UserServiceImpl();
-	
+
 	public void login(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		PrintWriter writer;
 		HttpSession session;
 
@@ -26,10 +26,16 @@ public class UserController {
 			writer = response.getWriter();
 			session = request.getSession();
 
-			String userId = request.getParameter("userId");
+			String email = request.getParameter("email");
 			String password = request.getParameter("password");
-			User user = userService.authenticate(userId, password);
-
+			User user = null;
+			try {
+				user = userService.authenticate(email, password);
+				session.setAttribute("user", user);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				System.out.println("Something went wrong while authentication");
+			}
 			if (user != null) {
 				session.setAttribute("user", user);
 				request.getRequestDispatcher("/index").forward(request, response);
@@ -45,9 +51,9 @@ public class UserController {
 			System.out.println("Something went wrong while authenticating");
 		}
 	}
-	
+
 	public void register(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		PrintWriter writer;
 		HttpSession session;
 
@@ -56,7 +62,6 @@ public class UserController {
 			writer = response.getWriter();
 			session = request.getSession();
 
-			String userId = request.getParameter("userId");
 			String userName = request.getParameter("userName");
 			String password = request.getParameter("password");
 			String email = request.getParameter("email");
@@ -64,10 +69,16 @@ public class UserController {
 			double age = Double.valueOf(request.getParameter("age"));
 			String sex = request.getParameter("sex");
 			String aadharNumber = request.getParameter("aadharNumber");
-			User user = new User(userId, userName, password, email, mobileNumber, (short)0, sex, age, aadharNumber);
-			
-			boolean value = userService.save(user);
-
+			User user = new User(userName, password, email, mobileNumber, (short) 0, sex, age, aadharNumber);
+			System.out.println(user);
+			boolean value = false;
+			try {
+				value = userService.save(user);
+				System.out.println(value);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				System.out.println("Something went wrong while saving data to database");
+			}
 			if (value) {
 				request.getRequestDispatcher("/login").include(request, response);
 				writer.println("<center><h3>Successfully signed in.<br>Login to continue</h3><center>");
@@ -80,7 +91,7 @@ public class UserController {
 			System.out.println("Couldn't get writter from response object");
 		} catch (ServletException e) {
 			e.printStackTrace();
-			System.out.println("Something went wrong while authenticating");
+			System.out.println("Something went wrong while saving data to database");
 		}
 	}
 }

@@ -21,32 +21,32 @@
 			<h3>
 				<table border="2">
 					<tr>
-						<td>User Id :</td>
-						<td><input type="text" name="userId" />
-					</tr>
-					<tr>
 						<td>User Name :</td>
-						<td><input type="text" name="userName" />
+						<td><input type="text" name="userName" required/>
 					</tr>
 					<tr>
 						<td>Email :</td>
-						<td><input type="text" name="email" />
+						<td><input type="text" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" title="Invalid email" required/>
+					</tr>
+					<tr>
+						<td>Password :</td>
+						<td><input type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required/>
 					</tr>
 					<tr>
 						<td>Mobile Number :</td>
-						<td><input type="number" name="mobileNumber" />
+						<td><input type="number" name="mobileNumber" pattern="[1-9]{1}[0-9]{9}" title="Only numbers allowed" required/>
 					</tr>
 					<tr>
 						<td>Age :</td>
-						<td><input type="text" name="age" />
+						<td><input type="text" name="age" required/>
 					</tr>
 					<tr>
 						<td>Sex :</td>
-						<td><input type="text" name="sex" />
+						<td><input type="text" name="sex" required/>
 					</tr>
 					<tr>
 						<td>Aadhar Number :</td>
-						<td><input type="number" name="aadharNumber" />
+						<td><input type="number" name="aadharNumber" pattern="[1-9]{1}[0-11]{9}" title="Invalid addhar number" required/>
 					</tr>
 					<tr>
 						<td colspan="2" align="center"><input type="submit"
