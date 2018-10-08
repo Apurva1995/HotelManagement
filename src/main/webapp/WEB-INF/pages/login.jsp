@@ -21,12 +21,12 @@
 			<h3>
 				<table border="2">
 					<tr>
-						<td>User Id :</td>
-						<td><input type="text" name="userId" size="15" required/>
+						<td>Email :</td>
+						<td><input type="text" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" title="Invalid email" required/>
 					</tr>
 					<tr>
 						<td>Password :</td>
-						<td><input type="password" name="password" size="15" required/>
+						<td><input type="password" name="password" required/>
 					</tr>
 					<tr>
 						<td colspan="2" align="center"><input type="submit"

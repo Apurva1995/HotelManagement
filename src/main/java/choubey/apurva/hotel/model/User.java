@@ -93,4 +93,11 @@ public class User {
 		this.aadharNumber = aadharNumber;
 	}
 	
+
+	@Override
+	public String toString() {
+		return "User [userName=" + userName + ", password=" + password + ", email=" + email + ", mobileNumber="
+				+ mobileNumber + ", isAdmin=" + isAdmin + ", sex=" + sex + ", age=" + age + ", aadharNumber="
+				+ aadharNumber + "]";
+	}
 }

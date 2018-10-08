@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%!
@@ -32,14 +32,14 @@
 	<nav id="navigation" class="backgroundgradient">
 	<ul>
 		<li><a class="navlink" href=<%= indexPath%>>Home</a></li>
-		<%-- <c:if test="${sessionScope.user == null}"> --%>
+		<c:if test="${sessionScope.user == null}">
 			<li><a id="login" class="navlink float-right" href=<%= loginPath%>>Login</a></li>
 			<li><a id="signup" class="navlink float-right" href=<%= registerPath%>>Sign
 					Up</a></li>
-		<%-- </c:if> --%>
-		<c:if test="{not empty sessionScope.user}">
-			<li class="navlink_right">welcome : ${sessionScope.user.userName }</li>
-			<li class="navlink_right"><a class="navlink_right" href="logout">Logout</a></li>
+		</c:if>
+		<c:if test="${not empty sessionScope.user}">
+			<li class="navlink float-right"><a class="navlink_right" href="logout">Logout</a></li>
+			<li class="navlink float-right">Welcome : <c:out value="${sessionScope.user.userName }"/> </li>
 		</c:if>
 	</ul>
 	</nav>
