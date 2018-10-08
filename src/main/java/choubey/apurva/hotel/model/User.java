@@ -16,7 +16,7 @@ public class User {
 		super();
 	}
 
-	public User(String userId, String userName, String password, String email, long mobileNumber, short isAdmin, String sex,
+	public User(String userName, String password, String email, long mobileNumber, short isAdmin, String sex,
 			double age, String aadharNumber) {
 		super();
 		this.userName = userName;
