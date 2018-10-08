@@ -3,7 +3,6 @@ package choubey.apurva.hotel.model;
 
 public class User {
 	
-	private String userId;
 	private String userName;
 	private String password;
 	private String email;
@@ -20,7 +19,6 @@ public class User {
 	public User(String userId, String userName, String password, String email, long mobileNumber, short isAdmin, String sex,
 			double age, String aadharNumber) {
 		super();
-		this.userId =  userId;
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
@@ -29,14 +27,6 @@ public class User {
 		this.sex = sex;
 		this.age = age;
 		this.aadharNumber = aadharNumber;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public String getUserName() {
