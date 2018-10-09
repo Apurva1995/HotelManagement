@@ -1,8 +1,13 @@
 package choubey.apurva.hotel.model;
 
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6363883797041920659L;
 	private String userName;
 	private String password;
 	private String email;

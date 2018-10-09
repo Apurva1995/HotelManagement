@@ -25,6 +25,7 @@ public class ServiceFrontController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		UserController userController;
 		String methodName;
 		String requestPath = request.getRequestURI();
 		methodName = requestPath.substring(requestPath.lastIndexOf('/') + 1);
@@ -34,8 +35,9 @@ public class ServiceFrontController extends HttpServlet {
 		response.setContentType("text/html");
 		
 		if ("user".equals(requestPath)) {
+			userController = (UserController) ControllerObjectProvider.getControllerObject(requestPath);
+			
 			switch (methodName) {
-
 			case "login":
 				request.getRequestDispatcher("/index").forward(request, response);
 				break;
@@ -81,6 +83,9 @@ public class ServiceFrontController extends HttpServlet {
 			break;
 		case "register":
 			userController.register(request, response);
+			break;
+		case "details":
+			userController.roomDetails(request, response);
 			break;
 		}
 	}

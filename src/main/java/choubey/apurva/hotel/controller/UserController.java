@@ -2,12 +2,14 @@ package choubey.apurva.hotel.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import choubey.apurva.hotel.model.Room;
 import choubey.apurva.hotel.model.User;
 import choubey.apurva.hotel.service.UserService;
 import choubey.apurva.hotel.service.impl.UserServiceImpl;
@@ -70,11 +72,9 @@ public class UserController {
 			String sex = request.getParameter("sex");
 			String aadharNumber = request.getParameter("aadharNumber");
 			User user = new User(userName, password, email, mobileNumber, (short) 0, sex, age, aadharNumber);
-			System.out.println(user);
 			boolean value = false;
 			try {
 				value = userService.save(user);
-				System.out.println(value);
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				System.out.println("Something went wrong while saving data to database");
@@ -92,6 +92,35 @@ public class UserController {
 		} catch (ServletException e) {
 			e.printStackTrace();
 			System.out.println("Something went wrong while saving data to database");
+		}
+	}
+
+	public void roomDetails(HttpServletRequest request, HttpServletResponse response) {
+
+		response.setContentType("text/html");
+		HttpSession session = request.getSession();
+
+		String bookFrom = request.getParameter("bookFrom");
+		String bookTill = request.getParameter("bookTill");
+
+		List<Room> rooms = userService.roomDetails(bookFrom, bookTill);
+		if (rooms.isEmpty()) {
+
+			try {
+				PrintWriter writer = response.getWriter();
+				request.getRequestDispatcher("/roomDetails").include(request, response);
+				writer.println("<h3><center>No rooms avaliable within selected period.</center></h3>");
+			} catch (IOException | ServletException e) {
+				e.printStackTrace();
+				System.out.println("Something went wrong while fetching rooms");
+			}
+		} else {
+			session.setAttribute("rooms", rooms);
+			try {
+				request.getRequestDispatcher("/showRooms").forward(request, response);
+			} catch (IOException | ServletException exception) {
+				exception.printStackTrace();
+			}
 		}
 	}
 }
