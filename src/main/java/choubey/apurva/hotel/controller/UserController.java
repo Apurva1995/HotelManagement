@@ -2,6 +2,7 @@ package choubey.apurva.hotel.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -98,7 +99,6 @@ public class UserController {
 	public void roomDetails(HttpServletRequest request, HttpServletResponse response) {
 
 		response.setContentType("text/html");
-		response.setContentType("");
 		HttpSession session = request.getSession();
 
 		String bookFrom = request.getParameter("bookFrom");
@@ -116,12 +116,20 @@ public class UserController {
 				System.out.println("Something went wrong while fetching rooms");
 			}
 		} else {
-			request.setAttribute("rooms", rooms);
+			session.setAttribute("rooms", rooms);
 			try {
-				request.getRequestDispatcher("/showRooms").include(request, response);
+				request.getRequestDispatcher("/showRooms").forward(request, response);
 			} catch (IOException | ServletException exception) {
 				exception.printStackTrace();
 			}
 		}
+	}
+	
+	public void bookRoom(HttpServletRequest request, HttpServletResponse response) {
+		
+		response.setContentType("text/html");
+		System.out.println(request.getParameterValues("bookedRooms").length);
+		System.out.println(request.getParameterValues("bookedRooms")[0]);
+		System.out.println(request.getParameterValues("bookedRooms")[1]);
 	}
 }
