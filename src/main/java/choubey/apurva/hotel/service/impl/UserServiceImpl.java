@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 					finalListOfRoom.add(room);
 				else {
 
-					SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date bookFromDate = formatter.parse(bookFrom);
 					Date bookTillDate = formatter.parse(bookTill);
 					Date roomBookedFrom = room.getRoomBookedFrom();

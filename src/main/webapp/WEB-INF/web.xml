@@ -39,6 +39,24 @@
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>roomDetails</servlet-name>
+		<jsp-file>/WEB-INF/pages/roomDetails.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>roomDetails</servlet-name>
+		<url-pattern>/roomDetails</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>showRooms</servlet-name>
+		<jsp-file>/WEB-INF/pages/showRooms.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>showRooms</servlet-name>
+		<url-pattern>/showRooms</url-pattern>
+	</servlet-mapping>
+	
 	<!-- Mapping of Front controller -->
 	<!-- <servlet>
 		<servlet-name>ServiceFrontController</servlet-name>

@@ -25,6 +25,7 @@ public class ServiceFrontController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		System.out.println("Inside get");
 		UserController userController;
 		String methodName;
 		String requestPath = request.getRequestURI();

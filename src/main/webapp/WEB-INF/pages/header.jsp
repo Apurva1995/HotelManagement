@@ -9,6 +9,7 @@
 	String registerPath;
 	String cssPath;
 	String indexPath;
+	String roomDetailsPath;
 %>
 
 <%
@@ -17,6 +18,7 @@
 	registerPath = contextPath + "/register";
 	indexPath = contextPath + "/index";
 	cssPath = contextPath + "/styles/layout.css";
+	roomDetailsPath = contextPath + "/roomDetails";
 %>
 
 <html>
@@ -38,6 +40,7 @@
 					Up</a></li>
 		</c:if>
 		<c:if test="${not empty sessionScope.user}">
+			<li><a class="navlink" href=<%= roomDetailsPath%>>Book Rooms</a></li>
 			<li class="navlink float-right"><a class="navlink_right" href="logout">Logout</a></li>
 			<li class="navlink float-right">Welcome : <c:out value="${sessionScope.user.userName }"/> </li>
 		</c:if>
