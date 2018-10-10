@@ -4,8 +4,15 @@
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 
+<%! String bookRoomControllerPath;
+	int i = 0;
+	Room room;
+%>
+
 <%
-	ArrayList rooms = (ArrayList<Room>) request.getAttribute("rooms");
+	bookRoomControllerPath 	= request.getContextPath() + "/controller/user/book";
+	ArrayList rooms = (ArrayList<Room>) session.getAttribute("rooms");
+	room = (Room)rooms.get(0);
 %>
 
 <html>
@@ -22,7 +29,7 @@
 			<c:out value="Select the rooms you want to book"></c:out>
 			<br> <br>
 
-			<form>
+			<form action="<%= bookRoomControllerPath%>" method="post">
 				<table border="2">
 					<tr>
 						<th>Select Rooms</th>
@@ -32,8 +39,7 @@
 					</tr>
 					<c:forEach var="room" items="${ rooms }" varStatus="loop">
 						<tr>
-
-							<td><input type="checkbox" name="bookedRooms"></td>
+							<td><input type="checkbox" name="bookedRooms" value="<%= ((Room)(rooms.get(i++))).getRoomNumber()%>"></td>
 							<td><c:out value="${room.roomNumber}"></c:out></td>
 							<td><c:out value="${room.roomType}"></c:out></td>
 							<td><c:out value="${room.roomCapacity}"></c:out></td>

@@ -25,7 +25,10 @@ public class ServiceFrontController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		System.out.println("Inside get");
+		if(request.getSession().getAttribute("user") == null) {
+			response.sendRedirect(request.getContextPath() + "/login");
+			return;
+		}
 		UserController userController;
 		String methodName;
 		String requestPath = request.getRequestURI();
@@ -45,6 +48,15 @@ public class ServiceFrontController extends HttpServlet {
 			case "register":
 				request.getRequestDispatcher("/register").forward(request, response);
 				break;
+			case "details":
+				request.getRequestDispatcher("/showRooms").forward(request, response);
+				break;
+			case "book":
+				if(request.getSession().getAttribute("rooms") == null)
+					request.getRequestDispatcher("/roomDetails").forward(request, response);
+				else
+					request.getRequestDispatcher("/showRooms").forward(request, response);
+				break;
 			}
 		}
 		
@@ -53,7 +65,7 @@ public class ServiceFrontController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+	
 		String methodName;
 		String requestPath = request.getRequestURI();
 		methodName = requestPath.substring(requestPath.lastIndexOf('/') + 1);
@@ -87,6 +99,9 @@ public class ServiceFrontController extends HttpServlet {
 			break;
 		case "details":
 			userController.roomDetails(request, response);
+			break;
+		case "book":
+			userController.bookRoom(request, response);
 			break;
 		}
 	}
