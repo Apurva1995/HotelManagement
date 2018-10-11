@@ -3,6 +3,7 @@ package choubey.apurva.hotel.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import choubey.apurva.hotel.controller.RoomController;
 import choubey.apurva.hotel.controller.UserController;
 
 public class ControllerObjectProvider {
@@ -17,6 +18,7 @@ public class ControllerObjectProvider {
 		
 		controllerObject = new HashMap<>();
 		controllerObject.put("user", new UserController());
+		controllerObject.put("room", new RoomController());
 	}
 	
 	public static Object getControllerObject(String key) {

@@ -6,13 +6,20 @@
 
 <%! String bookRoomControllerPath;
 	int i = 0;
-	Room room;
+	ArrayList rooms;
 %>
 
 <%
 	bookRoomControllerPath 	= request.getContextPath() + "/controller/user/book";
-	ArrayList rooms = (ArrayList<Room>) session.getAttribute("rooms");
-	room = (Room)rooms.get(0);
+	rooms = (ArrayList<Room>) session.getAttribute("rooms");
+%>
+
+<%!
+	private String flushCounter() {
+		
+		i = i%rooms.size();
+		return "";
+	}
 %>
 
 <html>
@@ -26,7 +33,7 @@
 
 		<h3 style="color: blue">
 			<br> <br> <br> <br> <br>
-			<c:out value="Select the rooms you want to book"></c:out>
+			<c:out value="Available Rooms"></c:out>
 			<br> <br>
 
 			<form action="<%= bookRoomControllerPath%>" method="post">
@@ -39,16 +46,12 @@
 					</tr>
 					<c:forEach var="room" items="${ rooms }" varStatus="loop">
 						<tr>
-							<td><input type="checkbox" name="bookedRooms" value="<%= ((Room)(rooms.get(i++))).getRoomNumber()%>"></td>
+							<td><input type="checkbox" name="bookedRooms" value="<%=flushCounter()%><%=((Room)(rooms.get(i++))).getRoomNumber()%>"></td>
 							<td><c:out value="${room.roomNumber}"></c:out></td>
 							<td><c:out value="${room.roomType}"></c:out></td>
 							<td><c:out value="${room.roomCapacity}"></c:out></td>
 						</tr>
 					</c:forEach>
-					<!-- <tr>
-						<td colspan="2" align="center"><input type="reset"
-							value="Reset"> <input type="submit" value="Book"></td>
-					</tr> -->
 				</table>
 				<br>
 				<center>

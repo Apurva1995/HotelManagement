@@ -2,7 +2,7 @@ package choubey.apurva.hotel.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.sql.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import choubey.apurva.hotel.model.Room;
 import choubey.apurva.hotel.model.User;
 import choubey.apurva.hotel.service.UserService;
 import choubey.apurva.hotel.service.impl.UserServiceImpl;
@@ -95,41 +94,26 @@ public class UserController {
 			System.out.println("Something went wrong while saving data to database");
 		}
 	}
-
-	public void roomDetails(HttpServletRequest request, HttpServletResponse response) {
-
-		response.setContentType("text/html");
-		HttpSession session = request.getSession();
-
-		String bookFrom = request.getParameter("bookFrom");
-		String bookTill = request.getParameter("bookTill");
-
-		List<Room> rooms = userService.roomDetails(bookFrom, bookTill);
-		if (rooms.isEmpty()) {
-
-			try {
-				PrintWriter writer = response.getWriter();
-				request.getRequestDispatcher("/roomDetails").include(request, response);
-				writer.println("<h3><center>No rooms avaliable within selected period.</center></h3>");
-			} catch (IOException | ServletException e) {
-				e.printStackTrace();
-				System.out.println("Something went wrong while fetching rooms");
-			}
-		} else {
-			session.setAttribute("rooms", rooms);
-			try {
-				request.getRequestDispatcher("/showRooms").forward(request, response);
-			} catch (IOException | ServletException exception) {
-				exception.printStackTrace();
-			}
-		}
-	}
 	
-	public void bookRoom(HttpServletRequest request, HttpServletResponse response) {
+	public void bookRoom(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		response.setContentType("text/html");
-		System.out.println(request.getParameterValues("bookedRooms").length);
-		System.out.println(request.getParameterValues("bookedRooms")[0]);
-		System.out.println(request.getParameterValues("bookedRooms")[1]);
+		PrintWriter writer = response.getWriter();
+		HttpSession session = request.getSession();
+		
+		String rooms[] = (String[]) request.getParameterValues("bookedRooms");
+		Date bookFrom = (Date)session.getAttribute("bookFrom");
+		Date bookTill = (Date)session.getAttribute("bookTill");
+		String userAadhar = ((User)session.getAttribute("user")).getAadharNumber();
+		
+		List<String> nonAvailableRooms = userService.bookRoom(rooms, userAadhar, bookFrom, bookTill);
+		
+		if(nonAvailableRooms == null || nonAvailableRooms.isEmpty()) {
+			request.getRequestDispatcher("/showRooms").include(request, response);
+			writer.println("<Center><h3 style=\"color:blue\">Please select rooms to book</h3></center>");
+			return;
+		}
+			
+		
 	}
 }

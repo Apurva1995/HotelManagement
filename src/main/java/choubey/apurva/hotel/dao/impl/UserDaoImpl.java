@@ -1,11 +1,12 @@
 package choubey.apurva.hotel.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import choubey.apurva.hotel.dao.UserDao;
@@ -80,34 +81,39 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<Room> roomDetails() {
-		List<Room> rooms = new ArrayList<>();
-		String query = "Select * from room where available = ?";
+	public List<Room> bookRoom(String[] roomNumbers, String userAadhar, Date bookFrom, Date bookTill) {
+		String query = "Update room SET bookedFrom=?, bookedTill=?, userAadhar=? where number=? AND userAadhar is null";
 
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			//connection.setAutoCommit(false);
+			int count = 1;
+			for (int i = 0; i < roomNumbers.length; i++) {
 
-			preparedStatement.setShort(1, (short) 1);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-
-				while (resultSet.next()) {
-
-					Room room = new Room(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
-							resultSet.getDate(4), resultSet.getDate(5), resultSet.getShort(6), resultSet.getString(7));
-					rooms.add(room);
-				}
+				preparedStatement.setDate(count++, bookFrom);
+				preparedStatement.setDate(count++, bookTill);
+				preparedStatement.setString(count++, userAadhar);
+				preparedStatement.setString(count++, roomNumbers[i]);
+				preparedStatement.addBatch();
+				count = 1;
 			}
-		} catch (SQLException exception) {
 
-			exception.printStackTrace();
-			System.out.println("Something went wrong while fetching rooms");
-		}
-		catch (Exception exception) {
+			Savepoint savepoint = connection.setSavepoint();
+			int[] result = preparedStatement.executeBatch();
+			System.out.println(result[0]);
+			System.out.println(result[1]);
+			for (int i = 0; i < result.length; i++) {
 
-			exception.printStackTrace();
-			System.out.println("Something went wrong while fetching rooms");
+				if (result[i] != -2)
+					System.out.println("Couldn't book");
+					//connection.rollback(savepoint);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Something went wrong while booking room");
 		}
-		return rooms;
+		return new ArrayList<>();
 	}
 
 }

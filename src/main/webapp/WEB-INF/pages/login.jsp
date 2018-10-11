@@ -6,6 +6,10 @@
 %>
 
 <% loginControllerPath 	= request.getContextPath() + "/controller/user/login";
+	if(session.getAttribute("user") != null) {
+		response.sendRedirect(request.getContextPath() + "/index");
+		return;
+	}
 %>
 
 <html>
