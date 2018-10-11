@@ -81,12 +81,13 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<Room> bookRoom(String[] roomNumbers, String userAadhar, Date bookFrom, Date bookTill) {
+	public synchronized List<String> bookRoom(String[] roomNumbers, String userAadhar, Date bookFrom, Date bookTill) {
 		String query = "Update room SET bookedFrom=?, bookedTill=?, userAadhar=? where number=? AND userAadhar is null";
-
+		List<String> nonAvailableRooms = new ArrayList<>();
+		
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			//connection.setAutoCommit(false);
+			connection.setAutoCommit(false);
 			int count = 1;
 			for (int i = 0; i < roomNumbers.length; i++) {
 
@@ -97,23 +98,24 @@ public class UserDaoImpl implements UserDao {
 				preparedStatement.addBatch();
 				count = 1;
 			}
-
 			Savepoint savepoint = connection.setSavepoint();
 			int[] result = preparedStatement.executeBatch();
-			System.out.println(result[0]);
-			System.out.println(result[1]);
 			for (int i = 0; i < result.length; i++) {
 
-				if (result[i] != -2)
-					System.out.println("Couldn't book");
-					//connection.rollback(savepoint);
+				if (result[i] != 1) {
+					nonAvailableRooms.add(roomNumbers[i]);
+				}
 			}
+			if(!nonAvailableRooms.isEmpty())
+				connection.rollback();
+			else
+				connection.commit();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Something went wrong while booking room");
 		}
-		return new ArrayList<>();
+		return nonAvailableRooms;
 	}
 
 }

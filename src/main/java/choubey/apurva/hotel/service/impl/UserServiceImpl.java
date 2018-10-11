@@ -30,8 +30,8 @@ public class UserServiceImpl implements UserService {
 		if(roomNumbers == null || roomNumbers.length == 0)
 			return null;
 		
-		userDao.bookRoom(roomNumbers, userAadhar, bookFrom, bookTill);
-		return null;
+		List<String> nonAvailableRooms = userDao.bookRoom(roomNumbers, userAadhar, bookFrom, bookTill);
+		return nonAvailableRooms;
 	}
 
 }
