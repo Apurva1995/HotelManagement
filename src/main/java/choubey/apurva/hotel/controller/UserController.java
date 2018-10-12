@@ -11,12 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import choubey.apurva.hotel.model.User;
+import choubey.apurva.hotel.service.RoomService;
 import choubey.apurva.hotel.service.UserService;
+import choubey.apurva.hotel.service.impl.RoomServiceImpl;
 import choubey.apurva.hotel.service.impl.UserServiceImpl;
 
 public class UserController {
 
 	private UserService userService = new UserServiceImpl();
+	private RoomService roomService = new RoomServiceImpl();
 
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 
@@ -95,6 +98,7 @@ public class UserController {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void bookRoom(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		response.setContentType("text/html");
@@ -108,12 +112,41 @@ public class UserController {
 		
 		List<String> nonAvailableRooms = userService.bookRoom(rooms, userAadhar, bookFrom, bookTill);
 		
-		if(nonAvailableRooms == null || nonAvailableRooms.isEmpty()) {
+		if(nonAvailableRooms == null) {
 			request.getRequestDispatcher("/showRooms").include(request, response);
 			writer.println("<Center><h3 style=\"color:blue\">Please select rooms to book</h3></center>");
 			return;
 		}
-			
+		else if(nonAvailableRooms.isEmpty()) {
+			session.removeAttribute("rooms");
+			session.removeAttribute("bookFrom");
+			session.removeAttribute("bookTill");
+			request.getRequestDispatcher("/showWhenBooked").include(request, response);
+			if(rooms.length == 1)
+				writer.println("<Center><h3 style=\"color:blue\">Room has been successfully booked</h3></center>");
+			else
+				writer.println("<Center><h3 style=\"color:blue\">Rooms have been successfully booked</h3></center>");
+		}
+		/*else {
+			session.setAttribute("rooms", roomService.roomDetails(bookFrom.toString(), bookTill.toString()));
+			request.setAttribute("nonAvailableRooms", nonAvailableRooms);
+			request.getRequestDispatcher("/showRoomsWhenNotBooked").include(request, response);
+			if(nonAvailableRooms.size() == 1)  {
+				writer.println("<Center><h3 style=\"color:blue\">Room " + nonAvailableRooms.get(0) + " is already booked</h3></center>");
+				writer.println("<Center><h3 style=\"color:blue\">Kindly book some other room</h3></center>");
+			}
+			else {
+				writer.print("<Center><h3 style=\"color:blue\">Rooms "); 
+				for(int i=0;i<nonAvailableRooms.size();i++) {
+					
+					if(i == nonAvailableRooms.size()-1)
+						writer.print("<h3 style=\"color:blue\">and  </h3>"+ nonAvailableRooms.get(i));
+					else
+						writer.print(nonAvailableRooms.get(i) + ", ");
+				}
+				writer.println("have been successfully booked</h3></center>\");");
+			}
+		}*/
 		
 	}
 }
