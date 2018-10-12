@@ -35,12 +35,51 @@ public class RoomDaoImpl implements RoomDao {
 
 			exception.printStackTrace();
 			System.out.println("Something went wrong while fetching rooms");
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 
 			exception.printStackTrace();
 			System.out.println("Something went wrong while fetching rooms");
 		}
-		return rooms;
+		return checkAvailability(rooms);
+	}
+
+	private List<Room> checkAvailability(List<Room> roomsAvailableForBooking) {
+
+		String query = "Select * from booking where roomNumber=?";
+		List<Room> availableRooms = new ArrayList<>();
+
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+			for (int i = 0; i < roomsAvailableForBooking.size(); i++) {
+
+				preparedStatement.setString(i + 1, roomsAvailableForBooking.get(i).getRoomNumber());
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+
+					if (resultSet.next()) {
+						while (resultSet.next()) {
+							
+							roomsAvailableForBooking.get(i).setRoomBookedFrom(resultSet.getDate(3));
+							roomsAvailableForBooking.get(i).setRoomBookedFrom(resultSet.getDate(4));
+							availableRooms.add(roomsAvailableForBooking.get(i));
+						}
+					}
+					else {
+						availableRooms.add(roomsAvailableForBooking.get(i));
+					}
+				}
+			}
+
+		} catch (SQLException exception) {
+
+			exception.printStackTrace();
+			System.out.println("Something went wrong while fetching rooms");
+		} catch (Exception exception) {
+
+			exception.printStackTrace();
+			System.out.println("Something went wrong while fetching rooms");
+		}
+
+		return availableRooms;
 	}
 }

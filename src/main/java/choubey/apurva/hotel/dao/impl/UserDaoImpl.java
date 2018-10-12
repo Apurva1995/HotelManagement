@@ -118,4 +118,28 @@ public class UserDaoImpl implements UserDao {
 		return nonAvailableRooms;
 	}
 
+	@Override
+	public boolean addRoom(String roomNumber, String roomType, String roomCapacity, short availability) {
+		
+		String query = "Insert into room values(?,?,?,?)";
+		
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			
+			preparedStatement.setString(1, roomNumber);
+			preparedStatement.setString(2, roomType);
+			preparedStatement.setString(3, roomCapacity);
+			preparedStatement.setShort(4, availability);
+			
+			if(preparedStatement.executeUpdate() == 1)
+				return true;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Something went wrong while adding room");
+		}
+		
+		return false;
+	}
+
 }

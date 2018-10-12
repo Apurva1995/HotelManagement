@@ -28,8 +28,13 @@ public class RoomServiceImpl implements RoomService {
 				Date bookTillDate = Date.valueOf(bookTill);
 				Date roomBookedFrom = room.getRoomBookedFrom();
 				Date roomBookedTill = room.getRoomBookedTill();
-				if (!(bookTillDate.after(roomBookedFrom) || bookTillDate.equals(roomBookedFrom)
-						|| bookFromDate.before(roomBookedTill) || bookFromDate.equals(roomBookedTill)))
+				if(bookFromDate.equals(roomBookedFrom) || bookFromDate.equals(roomBookedTill))
+					continue;
+				else if(bookTillDate.equals(roomBookedFrom) || bookTillDate.equals(roomBookedTill))
+					continue;
+				else if(roomBookedFrom.after(bookFromDate) && roomBookedTill.before(bookTillDate))
+					continue;
+				else if(!((bookFromDate.before(roomBookedTill) && bookFromDate.after(roomBookedFrom) || bookTillDate.before(roomBookedTill) && bookTillDate.after(roomBookedFrom))))
 					finalListOfRoom.add(room);
 			}
 		}

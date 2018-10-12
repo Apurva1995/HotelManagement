@@ -34,4 +34,9 @@ public class UserServiceImpl implements UserService {
 		return nonAvailableRooms;
 	}
 
+	@Override
+	public boolean addRoom(String roomNumber, String roomType, String roomCapacity, short availability) {
+		return userDao.addRoom(roomNumber, roomType, roomCapacity, availability);
+	}
+
 }

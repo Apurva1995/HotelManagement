@@ -32,7 +32,7 @@ public class RoomController {
 			try {
 				PrintWriter writer = response.getWriter();
 				request.getRequestDispatcher("/roomDetails").include(request, response);
-				writer.println("<h3><center>No rooms avaliable within selected period.</center></h3>");
+				writer.println("<h3><center>Sorry, No rooms avaliable on selected dates</center></h3>");
 			} catch (IOException | ServletException e) {
 				e.printStackTrace();
 				System.out.println("Something went wrong while fetching rooms");
@@ -42,8 +42,14 @@ public class RoomController {
 				session.setAttribute("rooms", rooms);
 				Date bookFromDate = Date.valueOf(bookFrom);
 				Date bookTillDate = Date.valueOf(bookTill);
-				session.setAttribute("bookFrom", bookFromDate);
-				session.setAttribute("bookTill", bookTillDate);
+				if(bookFromDate.after(bookTillDate)) {
+					session.setAttribute("bookFrom", bookTillDate);
+					session.setAttribute("bookTill", bookFromDate);
+				}
+				else {
+					session.setAttribute("bookFrom", bookFromDate);
+					session.setAttribute("bookTill", bookTillDate);
+				}
 				request.getRequestDispatcher("/showRooms").forward(request, response);
 			} catch (IOException | ServletException exception) {
 				exception.printStackTrace();

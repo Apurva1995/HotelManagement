@@ -75,6 +75,15 @@
 		<url-pattern>/showWhenBooked</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>addRoom</servlet-name>
+		<jsp-file>/WEB-INF/pages/addRoom.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>addRoom</servlet-name>
+		<url-pattern>/addRoom</url-pattern>
+	</servlet-mapping>
+	
 	<!-- Mapping of Front controller -->
 	<!-- <servlet>
 		<servlet-name>ServiceFrontController</servlet-name>

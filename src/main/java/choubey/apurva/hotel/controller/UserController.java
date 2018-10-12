@@ -123,30 +123,57 @@ public class UserController {
 			session.removeAttribute("bookTill");
 			request.getRequestDispatcher("/showWhenBooked").include(request, response);
 			if(rooms.length == 1)
-				writer.println("<Center><h3 style=\"color:blue\">Room has been successfully booked</h3></center>");
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Room has been successfully booked</h3></center>");
 			else
-				writer.println("<Center><h3 style=\"color:blue\">Rooms have been successfully booked</h3></center>");
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Rooms have been successfully booked</h3></center>");
 		}
-		/*else {
+		else {
 			session.setAttribute("rooms", roomService.roomDetails(bookFrom.toString(), bookTill.toString()));
-			request.setAttribute("nonAvailableRooms", nonAvailableRooms);
 			request.getRequestDispatcher("/showRoomsWhenNotBooked").include(request, response);
 			if(nonAvailableRooms.size() == 1)  {
-				writer.println("<Center><h3 style=\"color:blue\">Room " + nonAvailableRooms.get(0) + " is already booked</h3></center>");
-				writer.println("<Center><h3 style=\"color:blue\">Kindly book some other room</h3></center>");
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Room " + nonAvailableRooms.get(0) + " is already booked</h3></center>");
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Showing you the available rooms in a while</h3></center>");
 			}
 			else {
-				writer.print("<Center><h3 style=\"color:blue\">Rooms "); 
+				writer.print("<br><br><Center><h3 style=\"color:blue\">Rooms "); 
 				for(int i=0;i<nonAvailableRooms.size();i++) {
 					
 					if(i == nonAvailableRooms.size()-1)
-						writer.print("<h3 style=\"color:blue\">and  </h3>"+ nonAvailableRooms.get(i));
+						writer.print("and "+ nonAvailableRooms.get(i));
+					else if(i == nonAvailableRooms.size()-2)
+						writer.print(nonAvailableRooms.get(i) + " ");
 					else
 						writer.print(nonAvailableRooms.get(i) + ", ");
 				}
-				writer.println("have been successfully booked</h3></center>\");");
+				writer.println(" are already booked</h3></center><br>");
+				writer.println("<Center><h3 style=\"color:blue\">Showing you the available rooms in a while</h3></center>");
 			}
-		}*/
+		}	
+	}
+	
+	public void addRoom(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String roomNumber = request.getParameter("roomNumber");
+		String roomType = request.getParameter("roomType");
+		String roomCapacity = request.getParameter("roomCapacity");
+		short availability = Short.valueOf(request.getParameter("roomAvailability"));
+		
+		if(userService.addRoom(roomNumber, roomType, roomCapacity, availability)) {
+			
+			request.getRequestDispatcher("/addRoom").include(request, response);
+			response.getWriter().println("<Center><h3 style=\"color:blue\">Room is successfully added</h3></center>");
+		}
+		else {
+			
+			request.getRequestDispatcher("/addRoom").include(request, response);
+			response.getWriter().println("<Center><h3 style=\"color:blue\">Something went wrong while adding room. Please try again</h3></center>");
+		}
+			
+	}
+	
+	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		request.getSession().invalidate();
+		response.sendRedirect(request.getContextPath() + "/index");
 	}
 }

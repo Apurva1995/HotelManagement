@@ -29,8 +29,14 @@
 </head>
 <body bgcolor="cyan">
 	<%@include file="header.jsp"%>
+	
+	<c:if test="${empty rooms }">
+		<br><br><br><center><h3 style="color: blue">Sorry, no rooms are available on the selected dates</h3></center>
+		<br><br><br><center><h3 style="color: blue">Please try for some other dates.</h3></center>
+	</c:if>
+	
+	<c:if test="${not empty rooms}">
 	<center>
-
 		<h3 style="color: blue">
 			<br> <br> <br> <br> <br>
 			<c:out value="Available Rooms"></c:out>
@@ -61,8 +67,7 @@
 			</form>
 		</h3>
 	</center>
-
-
+	</c:if>
 	<%@include file="footer.jsp"%>
 </body>
 </html>

@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8" http-equiv="refresh" content="3; URL=<%= indexPathWhenBooked%>">
 <meta >
-<title>Insert title here</title>
+<title>Page Displayed after room is successfully booked</title>
 </head>
 <body>
 <%@include file="header.jsp"%>

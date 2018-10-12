@@ -9,6 +9,8 @@
 	String cssPath;
 	String indexPath;
 	String roomDetailsPath;
+	String logoutPath;
+	String addRoomPath;
 %>
 
 <%
@@ -18,6 +20,8 @@
 	indexPath = contextPath + "/index";
 	cssPath = contextPath + "/styles/layout.css";
 	roomDetailsPath = contextPath + "/roomDetails";
+	addRoomPath = contextPath + "/addRoom";
+	logoutPath = contextPath + "/controller/user/logout";
 %>
 
 <html>
@@ -39,8 +43,12 @@
 					Up</a></li>
 		</c:if>
 		<c:if test="${not empty sessionScope.user}">
+			<c:if test="${sessionScope.user.isAdmin == 1 }">
+				<li><a class="navlink" href=<%= addRoomPath%>>Add Rooms</a></li>
+				<li><a class="navlink" href=<%= roomDetailsPath%>>Remove Rooms</a></li>
+			</c:if>
 			<li><a class="navlink" href=<%= roomDetailsPath%>>Book Rooms</a></li>
-			<li class="navlink float-right"><a class="navlink_right" href="logout">Logout</a></li>
+			<li class="navlink float-right"><a class="navlink_right" href=<%= logoutPath%>>Logout</a></li>
 			<li class="navlink float-right">Welcome : <c:out value="${sessionScope.user.userName }"/> </li>
 		</c:if>
 	</ul>
