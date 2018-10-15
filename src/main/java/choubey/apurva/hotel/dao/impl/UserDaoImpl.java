@@ -1,11 +1,16 @@
 package choubey.apurva.hotel.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.util.ArrayList;
+import java.util.List;
 
 import choubey.apurva.hotel.dao.UserDao;
+import choubey.apurva.hotel.model.Room;
 import choubey.apurva.hotel.model.User;
 import choubey.apurva.hotel.util.DBConnectionProvider;
 
@@ -62,15 +67,61 @@ public class UserDaoImpl implements UserDao {
 			preparedStatement.setString(6, user.getSex());
 			preparedStatement.setDouble(7, user.getAge());
 			preparedStatement.setShort(8, user.getIsAdmin());
-			
-			if(preparedStatement.executeUpdate() == 1)
+
+			if (preparedStatement.executeUpdate() == 1)
 				return true;
-				
 
 		} catch (SQLException exception) {
 
 			exception.printStackTrace();
 			System.out.println("Something went wrong while saving data to database");
+		}
+
+		return false;
+	}
+
+	@Override
+	public void bookRoom(List<String> roomNumbers, String userAadhar, Date bookFrom, Date bookTill)
+			throws SQLException {
+		String query = "Insert into booking (roomNumber, bookedFrom, bookedTill, userAadhar) values (?,?,?,?)";
+
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			int count = 1;
+			for (int i = 0; i < roomNumbers.size(); i++) {
+
+				preparedStatement.setString(count++, roomNumbers.get(i));
+				preparedStatement.setDate(count++, bookFrom);
+				preparedStatement.setDate(count++, bookTill);
+				preparedStatement.setString(count++, userAadhar);
+
+				if(preparedStatement.executeUpdate() != 1) 
+					throw new SQLException();
+				
+				count = 1;
+			}
+		}
+		return;
+	}
+
+	@Override
+	public boolean addRoom(String roomNumber, String roomType, String roomCapacity, short availability) {
+
+		String query = "Insert into room values(?,?,?,?)";
+
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+			preparedStatement.setString(1, roomNumber);
+			preparedStatement.setString(2, roomType);
+			preparedStatement.setString(3, roomCapacity);
+			preparedStatement.setShort(4, availability);
+
+			if (preparedStatement.executeUpdate() == 1)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Something went wrong while adding room");
 		}
 
 		return false;

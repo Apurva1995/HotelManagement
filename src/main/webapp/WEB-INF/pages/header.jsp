@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
 <%!
 	String contextPath;
@@ -9,6 +8,9 @@
 	String registerPath;
 	String cssPath;
 	String indexPath;
+	String roomDetailsPath;
+	String logoutPath;
+	String addRoomPath;
 %>
 
 <%
@@ -17,11 +19,14 @@
 	registerPath = contextPath + "/register";
 	indexPath = contextPath + "/index";
 	cssPath = contextPath + "/styles/layout.css";
+	roomDetailsPath = contextPath + "/roomDetails";
+	addRoomPath = contextPath + "/addRoom";
+	logoutPath = contextPath + "/controller/user/logout";
 %>
 
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta charset="utf-8">
 <title>Header page</title>
 <link href=<%= cssPath%> rel="stylesheet" />
 </head>
@@ -38,7 +43,12 @@
 					Up</a></li>
 		</c:if>
 		<c:if test="${not empty sessionScope.user}">
-			<li class="navlink float-right"><a class="navlink_right" href="logout">Logout</a></li>
+			<c:if test="${sessionScope.user.isAdmin == 1 }">
+				<li><a class="navlink" href=<%= addRoomPath%>>Add Rooms</a></li>
+				<li><a class="navlink" href=<%= roomDetailsPath%>>Remove Rooms</a></li>
+			</c:if>
+			<li><a class="navlink" href=<%= roomDetailsPath%>>Book Rooms</a></li>
+			<li class="navlink float-right"><a class="navlink_right" href=<%= logoutPath%>>Logout</a></li>
 			<li class="navlink float-right">Welcome : <c:out value="${sessionScope.user.userName }"/> </li>
 		</c:if>
 	</ul>
