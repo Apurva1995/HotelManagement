@@ -10,6 +10,6 @@ public interface UserDao {
 
 	public User authenticate(String userId, String password);
 	public boolean save(User user);
-	public String bookRoom(List<String> roomNumbers, String userAadhar, Date bookFrom, Date bookTill) throws SQLException;
+	public void bookRoom(List<String> roomNumbers, String userAadhar, Date bookFrom, Date bookTill) throws SQLException;
 	public boolean addRoom(String roomNumber, String roomType, String roomCapacity, short availability);
 }

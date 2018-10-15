@@ -16,8 +16,8 @@
 
 <%!
 	private String flushCounter() {
-		
-		i = i%rooms.size();
+	
+		i=0;
 		return "";
 	}
 %>
@@ -38,7 +38,7 @@
 	<c:if test="${not empty rooms}">
 	<center>
 		<h3 style="color: blue">
-			<br> <br> <br> <br> <br>
+			<br> <br> <br> 
 			<c:out value="Available Rooms"></c:out>
 			<br> <br>
 
@@ -50,9 +50,10 @@
 						<th>Room Type</th>
 						<th>Room Capacity</th>
 					</tr>
+					<%=flushCounter()%>
 					<c:forEach var="room" items="${ rooms }" varStatus="loop">
 						<tr>
-							<td><input type="checkbox" name="bookedRooms" value="<%=flushCounter()%><%=((Room)(rooms.get(i++))).getRoomNumber()%>"></td>
+							<td><input type="checkbox" name="bookedRooms" value="<%=((Room)(rooms.get(i++))).getRoomNumber()%>"></td>
 							<td><c:out value="${room.roomNumber}"></c:out></td>
 							<td><c:out value="${room.roomType}"></c:out></td>
 							<td><c:out value="${room.roomCapacity}"></c:out></td>

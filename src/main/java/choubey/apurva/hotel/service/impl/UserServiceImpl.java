@@ -41,10 +41,8 @@ public class UserServiceImpl implements UserService {
 		if (roomNumbers == null || roomNumbers.length == 0)
 			return null;
 
-		List<String> result = new ArrayList<>();
-		String receivedId;
-		String generatedId;
-
+		List<String> nonAvailableRooms = new ArrayList<>();
+		
 		Map<String, List<Booking>> latestBookingsForSelectedRooms = roomService.latestBookings(roomNumbers);
 		Set<String> availableRooms = RoomBookingValidator.checkAvailabilityOfBookedRooms(bookFrom.toString(),
 				bookTill.toString(), latestBookingsForSelectedRooms);
@@ -53,17 +51,15 @@ public class UserServiceImpl implements UserService {
 
 			if (latestBookingsForSelectedRooms.get(roomNumbers[i]) != null) {
 				if (!availableRooms.contains(roomNumbers[i]))
-					result.add(roomNumbers[i]);
+					nonAvailableRooms.add(roomNumbers[i]);
 			}
 		}
 
-		if (result.isEmpty()) {
+		if (nonAvailableRooms.isEmpty()) {
 			List<String> finalRoomList = Arrays.asList(roomNumbers);
-			receivedId = userDao.bookRoom(finalRoomList, userAadhar, bookFrom, bookTill);
-			generatedId = "UserId" + UUID.randomUUID().toString() + receivedId;
-			result.add(generatedId);
+			userDao.bookRoom(finalRoomList, userAadhar, bookFrom, bookTill);
 		}
-		return result;
+		return nonAvailableRooms;
 	}
 
 	@Override

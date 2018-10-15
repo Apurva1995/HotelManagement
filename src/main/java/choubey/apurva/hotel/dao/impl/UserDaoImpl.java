@@ -81,10 +81,9 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public String bookRoom(List<String> roomNumbers, String userAadhar, Date bookFrom, Date bookTill)
+	public void bookRoom(List<String> roomNumbers, String userAadhar, Date bookFrom, Date bookTill)
 			throws SQLException {
 		String query = "Insert into booking (roomNumber, bookedFrom, bookedTill, userAadhar) values (?,?,?,?)";
-		String id = "";
 
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -96,21 +95,13 @@ public class UserDaoImpl implements UserDao {
 				preparedStatement.setDate(count++, bookTill);
 				preparedStatement.setString(count++, userAadhar);
 
-				if(preparedStatement.executeUpdate() == 1) {
-					
-					
-				}
-				else 
+				if(preparedStatement.executeUpdate() != 1) 
 					throw new SQLException();
-				try (ResultSet resultSet = preparedStatement.getResultSet()) {
-					if (resultSet.next()) {
-						id = id + resultSet.getLong(1);
-					}
-				}
+				
 				count = 1;
 			}
 		}
-		return id;
+		return;
 	}
 
 	@Override
