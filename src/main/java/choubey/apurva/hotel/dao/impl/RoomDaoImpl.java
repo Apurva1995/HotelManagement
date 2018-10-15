@@ -5,16 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import choubey.apurva.hotel.dao.RoomDao;
+import choubey.apurva.hotel.model.Booking;
 import choubey.apurva.hotel.model.Room;
 import choubey.apurva.hotel.util.DBConnectionProvider;
 
 public class RoomDaoImpl implements RoomDao {
 
 	@Override
-	public List<Room> roomDetails() {
+	public List<Room> roomsAvailableForBooking() {
 		List<Room> rooms = new ArrayList<>();
 		String query = "Select * from room where available = ?";
 
@@ -27,7 +30,7 @@ public class RoomDaoImpl implements RoomDao {
 				while (resultSet.next()) {
 
 					Room room = new Room(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
-							resultSet.getDate(4), resultSet.getDate(5), resultSet.getShort(6), resultSet.getString(7));
+							(short) resultSet.getShort(4));
 					rooms.add(room);
 				}
 			}
@@ -40,32 +43,31 @@ public class RoomDaoImpl implements RoomDao {
 			exception.printStackTrace();
 			System.out.println("Something went wrong while fetching rooms");
 		}
-		return checkAvailability(rooms);
+		return rooms;
 	}
 
-	private List<Room> checkAvailability(List<Room> roomsAvailableForBooking) {
+	@Override
+	public Map<String, List<Booking>> bookings() {
 
-		String query = "Select * from booking where roomNumber=?";
-		List<Room> availableRooms = new ArrayList<>();
+		Map<String, List<Booking>> bookedRooms = new HashMap<>();
+		String query = "Select roomNumber, bookedFrom, bookedTill from booking";
 
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-			for (int i = 0; i < roomsAvailableForBooking.size(); i++) {
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-				preparedStatement.setString(i + 1, roomsAvailableForBooking.get(i).getRoomNumber());
-				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
 
-					if (resultSet.next()) {
-						while (resultSet.next()) {
-							
-							roomsAvailableForBooking.get(i).setRoomBookedFrom(resultSet.getDate(3));
-							roomsAvailableForBooking.get(i).setRoomBookedFrom(resultSet.getDate(4));
-							availableRooms.add(roomsAvailableForBooking.get(i));
-						}
-					}
-					else {
-						availableRooms.add(roomsAvailableForBooking.get(i));
+					if (bookedRooms.get(resultSet.getString(1)) == null) {
+
+						List<Booking> bookings = new ArrayList<>();
+						bookings.add(new Booking(0L, resultSet.getString(1), resultSet.getDate(2), resultSet.getDate(3),
+								null));
+						bookedRooms.put(resultSet.getString(1), bookings);
+					} else {
+						bookedRooms.get(resultSet.getString(1)).add(new Booking(0L, resultSet.getString(1),
+								resultSet.getDate(2), resultSet.getDate(3), null));
 					}
 				}
 			}
@@ -79,7 +81,49 @@ public class RoomDaoImpl implements RoomDao {
 			exception.printStackTrace();
 			System.out.println("Something went wrong while fetching rooms");
 		}
+		return bookedRooms;
+	}
 
-		return availableRooms;
+	@Override
+	public Map<String, List<Booking>> latestBookings(String[] roomNumbers) {
+		
+		Map<String, List<Booking>> latestBookings = new HashMap<>();
+		String query = "Select roomNumber, bookedFrom, bookedTill from booking where roomNumber = ?";
+		
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			
+			for(int i=0;i<roomNumbers.length;i++) {
+				
+				preparedStatement.setString(1, roomNumbers[i]);
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+
+					while (resultSet.next()) {
+
+						if (latestBookings.get(resultSet.getString(1)) == null) {
+
+							List<Booking> bookings = new ArrayList<>();
+							bookings.add(new Booking(0L, resultSet.getString(1), resultSet.getDate(2), resultSet.getDate(3),
+									null));
+							latestBookings.put(resultSet.getString(1), bookings);
+						} else {
+							latestBookings.get(resultSet.getString(1)).add(new Booking(0L, resultSet.getString(1),
+									resultSet.getDate(2), resultSet.getDate(3), null));
+						}
+					}
+				}
+			}
+			
+		}catch (SQLException exception) {
+
+			exception.printStackTrace();
+			System.out.println("Something went wrong while fetching rooms");
+		} catch (Exception exception) {
+
+			exception.printStackTrace();
+			System.out.println("Something went wrong while fetching rooms");
+		}
+		
+		return latestBookings;
 	}
 }

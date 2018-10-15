@@ -18,7 +18,7 @@ public class RoomController {
 
 	private RoomService roomService = new RoomServiceImpl();
 
-	public void roomDetails(HttpServletRequest request, HttpServletResponse response) {
+	public void showAvailableRooms(HttpServletRequest request, HttpServletResponse response) {
 
 		response.setContentType("text/html");
 		HttpSession session = request.getSession();
@@ -26,7 +26,7 @@ public class RoomController {
 		String bookFrom = request.getParameter("bookFrom");
 		String bookTill = request.getParameter("bookTill");
 
-		List<Room> rooms = roomService.roomDetails(bookFrom, bookTill);
+		List<Room> rooms = roomService.availableRooms(bookFrom, bookTill);
 		if (rooms.isEmpty()) {
 
 			try {

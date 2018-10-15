@@ -3,6 +3,7 @@ package choubey.apurva.hotel.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -110,40 +111,53 @@ public class UserController {
 		Date bookTill = (Date)session.getAttribute("bookTill");
 		String userAadhar = ((User)session.getAttribute("user")).getAadharNumber();
 		
-		List<String> nonAvailableRooms = userService.bookRoom(rooms, userAadhar, bookFrom, bookTill);
+		List<String> result = null;
 		
-		if(nonAvailableRooms == null) {
+		try {
+			result = userService.bookRoom(rooms, userAadhar, bookFrom, bookTill);
+		}catch(SQLException exception) {
+			exception.printStackTrace();
+			request.getRequestDispatcher("/showRooms").include(request, response);
+			writer.println("<Center><h3 style=\"color:blue\">Could not book all the rooms. Please try again</h3></center>");
+			return;
+		}
+		
+		if(result == null) {
 			request.getRequestDispatcher("/showRooms").include(request, response);
 			writer.println("<Center><h3 style=\"color:blue\">Please select rooms to book</h3></center>");
 			return;
 		}
-		else if(nonAvailableRooms.isEmpty()) {
+		else if(result.size() == 1 && result.get(0).startsWith("UserId")) {
 			session.removeAttribute("rooms");
 			session.removeAttribute("bookFrom");
 			session.removeAttribute("bookTill");
 			request.getRequestDispatcher("/showWhenBooked").include(request, response);
-			if(rooms.length == 1)
+			if(rooms.length == 1) {
 				writer.println("<br><br><Center><h3 style=\"color:blue\">Room has been successfully booked</h3></center>");
-			else
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Your booking Id is : " + result.get(0) +  "</h3></center>");
+			}
+			else {
 				writer.println("<br><br><Center><h3 style=\"color:blue\">Rooms have been successfully booked</h3></center>");
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Your booking Id is : " + result.get(0) +  "</h3></center>");
+			}
 		}
 		else {
-			session.setAttribute("rooms", roomService.roomDetails(bookFrom.toString(), bookTill.toString()));
+			session.setAttribute("rooms", roomService.availableRooms(bookFrom.toString(), bookTill.toString()));
 			request.getRequestDispatcher("/showRoomsWhenNotBooked").include(request, response);
-			if(nonAvailableRooms.size() == 1)  {
-				writer.println("<br><br><Center><h3 style=\"color:blue\">Room " + nonAvailableRooms.get(0) + " is already booked</h3></center>");
+			if(result.size() == 1)  {
+				writer.println("<br><br><Center><h3 style=\"color:blue\">Room " + result.get(0) + " is already booked</h3></center>");
 				writer.println("<br><br><Center><h3 style=\"color:blue\">Showing you the available rooms in a while</h3></center>");
 			}
 			else {
 				writer.print("<br><br><Center><h3 style=\"color:blue\">Rooms "); 
-				for(int i=0;i<nonAvailableRooms.size();i++) {
+				for(int i=0;i<result.size();i++) {
 					
-					if(i == nonAvailableRooms.size()-1)
-						writer.print("and "+ nonAvailableRooms.get(i));
-					else if(i == nonAvailableRooms.size()-2)
-						writer.print(nonAvailableRooms.get(i) + " ");
+					if(i == result.size()-1)
+						writer.print("and "+ result.get(i));
+					else if(i == result.size()-2)
+						writer.print(result.get(i) + " ");
 					else
-						writer.print(nonAvailableRooms.get(i) + ", ");
+						writer.print(result.get(i) + ", ");
 				}
 				writer.println(" are already booked</h3></center><br>");
 				writer.println("<Center><h3 style=\"color:blue\">Showing you the available rooms in a while</h3></center>");

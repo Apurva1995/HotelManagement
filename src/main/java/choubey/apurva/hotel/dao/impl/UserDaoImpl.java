@@ -81,64 +81,58 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public synchronized List<String> bookRoom(String[] roomNumbers, String userAadhar, Date bookFrom, Date bookTill) {
-		String query = "Update room SET bookedFrom=?, bookedTill=?, userAadhar=? where number=? AND userAadhar is null";
-		List<String> nonAvailableRooms = new ArrayList<>();
-		
+	public String bookRoom(List<String> roomNumbers, String userAadhar, Date bookFrom, Date bookTill)
+			throws SQLException {
+		String query = "Insert into booking (roomNumber, bookedFrom, bookedTill, userAadhar) values (?,?,?,?)";
+		String id = "";
+
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			connection.setAutoCommit(false);
 			int count = 1;
-			for (int i = 0; i < roomNumbers.length; i++) {
+			for (int i = 0; i < roomNumbers.size(); i++) {
 
+				preparedStatement.setString(count++, roomNumbers.get(i));
 				preparedStatement.setDate(count++, bookFrom);
 				preparedStatement.setDate(count++, bookTill);
 				preparedStatement.setString(count++, userAadhar);
-				preparedStatement.setString(count++, roomNumbers[i]);
-				preparedStatement.addBatch();
+
+				if(preparedStatement.executeUpdate() == 1) {
+					
+					
+				}
+				else 
+					throw new SQLException();
+				try (ResultSet resultSet = preparedStatement.getResultSet()) {
+					if (resultSet.next()) {
+						id = id + resultSet.getLong(1);
+					}
+				}
 				count = 1;
 			}
-			Savepoint savepoint = connection.setSavepoint();
-			int[] result = preparedStatement.executeBatch();
-			for (int i = 0; i < result.length; i++) {
-
-				if (result[i] != 1) {
-					nonAvailableRooms.add(roomNumbers[i]);
-				}
-			}
-			if(!nonAvailableRooms.isEmpty())
-				connection.rollback();
-			else
-				connection.commit();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Something went wrong while booking room");
 		}
-		return nonAvailableRooms;
+		return id;
 	}
 
 	@Override
 	public boolean addRoom(String roomNumber, String roomType, String roomCapacity, short availability) {
-		
+
 		String query = "Insert into room values(?,?,?,?)";
-		
+
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			
+
 			preparedStatement.setString(1, roomNumber);
 			preparedStatement.setString(2, roomType);
 			preparedStatement.setString(3, roomCapacity);
 			preparedStatement.setShort(4, availability);
-			
-			if(preparedStatement.executeUpdate() == 1)
+
+			if (preparedStatement.executeUpdate() == 1)
 				return true;
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Something went wrong while adding room");
 		}
-		
+
 		return false;
 	}
 

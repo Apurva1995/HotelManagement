@@ -9,7 +9,7 @@
 <%! String roomDetailsControllerPath;
 %>
 
-<% roomDetailsControllerPath 	= request.getContextPath() + "/controller/room/details";
+<% roomDetailsControllerPath 	= request.getContextPath() + "/controller/room/availableRooms";
 %>
 
 <body bgcolor="cyan">

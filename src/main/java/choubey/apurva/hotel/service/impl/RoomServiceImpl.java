@@ -2,43 +2,57 @@ package choubey.apurva.hotel.service.impl;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import choubey.apurva.hotel.dao.RoomDao;
 import choubey.apurva.hotel.dao.impl.RoomDaoImpl;
+import choubey.apurva.hotel.model.Booking;
 import choubey.apurva.hotel.model.Room;
 import choubey.apurva.hotel.service.RoomService;
+import choubey.apurva.hotel.util.RoomBookingValidator;
 
 public class RoomServiceImpl implements RoomService {
 
 	private RoomDao roomDao = new RoomDaoImpl();
 
 	@Override
-	public List<Room> roomDetails(String bookFrom, String bookTill) {
+	public List<Room> availableRooms(String bookFrom, String bookTill) {
 
-		List<Room> rooms = roomDao.roomDetails();
-		List<Room> finalListOfRoom = new ArrayList<>();
-		for (Room room : rooms) {
+		List<Room> availableRooms = new ArrayList<>();
 
-			if (room.getRoomBookedFrom() == null)
-				finalListOfRoom.add(room);
-			else {
+		// Fetching all rooms available for booking
+		List<Room> allRooms = roomDao.roomsAvailableForBooking();
 
-				Date bookFromDate = Date.valueOf(bookFrom);
-				Date bookTillDate = Date.valueOf(bookTill);
-				Date roomBookedFrom = room.getRoomBookedFrom();
-				Date roomBookedTill = room.getRoomBookedTill();
-				if(bookFromDate.equals(roomBookedFrom) || bookFromDate.equals(roomBookedTill))
-					continue;
-				else if(bookTillDate.equals(roomBookedFrom) || bookTillDate.equals(roomBookedTill))
-					continue;
-				else if(roomBookedFrom.after(bookFromDate) && roomBookedTill.before(bookTillDate))
-					continue;
-				else if(!((bookFromDate.before(roomBookedTill) && bookFromDate.after(roomBookedFrom) || bookTillDate.before(roomBookedTill) && bookTillDate.after(roomBookedFrom))))
-					finalListOfRoom.add(room);
+		// Fetching all the bookings done for all the rooms
+		Map<String, List<Booking>> allBookings = roomDao.bookings();
+
+		// Adding the rooms that are not booked at all to list of available
+		// rooms
+		for (int i = 0; i < allRooms.size(); i++) {
+
+			if (allBookings.get(allRooms.get(i).getRoomNumber()) == null) {
+				availableRooms.add(allRooms.get(i));
 			}
 		}
-		return finalListOfRoom;
+
+		Set<String> validatedRooms = RoomBookingValidator.checkAvailabilityOfBookedRooms(bookFrom, bookTill, allBookings);
+		for (int i = 0; i < allRooms.size(); i++) {
+
+			if (validatedRooms.contains(allRooms.get(i).getRoomNumber()))
+				availableRooms.add(allRooms.get(i));
+		}
+
+		return availableRooms;
+	}
+
+	
+
+	@Override
+	public Map<String, List<Booking>> latestBookings(String[] roomNumbers) {
+		return roomDao.latestBookings(roomNumbers);
 	}
 
 }

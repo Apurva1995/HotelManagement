@@ -49,7 +49,7 @@ public class ServiceFrontController extends HttpServlet {
 			case "register":
 				request.getRequestDispatcher("/register").forward(request, response);
 				break;
-			case "details":
+			case "availableRooms":
 				request.getRequestDispatcher("/showRooms").forward(request, response);
 				break;
 			case "book":
@@ -136,8 +136,8 @@ public class ServiceFrontController extends HttpServlet {
 		
 		switch (methodName) {
 
-		case "details":
-			roomController.roomDetails(request, response);
+		case "availableRooms":
+			roomController.showAvailableRooms(request, response);
 			break;
 		}
 	}
