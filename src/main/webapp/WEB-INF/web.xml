@@ -84,6 +84,24 @@
 		<url-pattern>/addRoom</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>showBookings</servlet-name>
+		<jsp-file>/WEB-INF/pages/showBookings.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>showBookings</servlet-name>
+		<url-pattern>/showBookings</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>cancellationSuccess</servlet-name>
+		<jsp-file>/WEB-INF/pages/cancellationSuccess.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>cancellationSuccess</servlet-name>
+		<url-pattern>/cancellationSuccess</url-pattern>
+	</servlet-mapping>
+	
 	<!-- Mapping of Front controller -->
 	<!-- <servlet>
 		<servlet-name>ServiceFrontController</servlet-name>
