@@ -31,6 +31,7 @@ public class ServiceFrontController extends HttpServlet {
 			return;
 		}
 		UserController userController;
+		RoomController roomController;
 		String methodName;
 		String requestPath = request.getRequestURI();
 		methodName = requestPath.substring(requestPath.lastIndexOf('/') + 1);
@@ -69,6 +70,14 @@ public class ServiceFrontController extends HttpServlet {
 				break;
 			case "logout":
 				userController.logout(request, response);
+				break;
+			}
+		}
+		else {
+			roomController = (RoomController) ControllerObjectProvider.getControllerObject(requestPath);
+			switch (methodName) {
+			case "availableForRemoving":
+				roomController.roomsAvailableForRemoving(request, response);
 				break;
 			}
 		}

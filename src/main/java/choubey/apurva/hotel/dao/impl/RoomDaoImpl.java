@@ -86,15 +86,15 @@ public class RoomDaoImpl implements RoomDao {
 
 	@Override
 	public Map<String, List<Booking>> latestBookings(String[] roomNumbers) {
-		
+
 		Map<String, List<Booking>> latestBookings = new HashMap<>();
 		String query = "Select roomNumber, bookedFrom, bookedTill from booking where roomNumber = ?";
-		
+
 		try (Connection connection = DBConnectionProvider.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			
-			for(int i=0;i<roomNumbers.length;i++) {
-				
+
+			for (int i = 0; i < roomNumbers.length; i++) {
+
 				preparedStatement.setString(1, roomNumbers[i]);
 				try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -103,8 +103,8 @@ public class RoomDaoImpl implements RoomDao {
 						if (latestBookings.get(resultSet.getString(1)) == null) {
 
 							List<Booking> bookings = new ArrayList<>();
-							bookings.add(new Booking(0L, resultSet.getString(1), resultSet.getDate(2), resultSet.getDate(3),
-									null));
+							bookings.add(new Booking(0L, resultSet.getString(1), resultSet.getDate(2),
+									resultSet.getDate(3), null));
 							latestBookings.put(resultSet.getString(1), bookings);
 						} else {
 							latestBookings.get(resultSet.getString(1)).add(new Booking(0L, resultSet.getString(1),
@@ -113,8 +113,8 @@ public class RoomDaoImpl implements RoomDao {
 					}
 				}
 			}
-			
-		}catch (SQLException exception) {
+
+		} catch (SQLException exception) {
 
 			exception.printStackTrace();
 			System.out.println("Something went wrong while fetching rooms");
@@ -123,7 +123,29 @@ public class RoomDaoImpl implements RoomDao {
 			exception.printStackTrace();
 			System.out.println("Something went wrong while fetching rooms");
 		}
-		
+
 		return latestBookings;
+	}
+
+	@Override
+	public List<Room> roomsAvailableForCancelling() throws SQLException {
+
+		String query = "Select * from room where available=?";
+		List<Room> rooms = new ArrayList<>();
+
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+			preparedStatement.setShort(1, (short) 1);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+
+				while (resultSet.next()) {
+
+					Room room = new Room(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getShort(4));
+					rooms.add(room);
+				}
+			}
+		}
+		return rooms;
 	}
 }

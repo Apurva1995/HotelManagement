@@ -38,6 +38,7 @@ public class UserController {
 			User user = null;
 			try {
 				user = userService.authenticate(email, password);
+				session.setMaxInactiveInterval(20);
 				session.setAttribute("user", user);
 			} catch (Exception exception) {
 				exception.printStackTrace();

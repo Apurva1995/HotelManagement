@@ -1,5 +1,6 @@
 package choubey.apurva.hotel.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -10,4 +11,5 @@ public interface RoomDao {
 	public List<Room> roomsAvailableForBooking();
 	public Map<String, List<Booking>> bookings();
 	public Map<String, List<Booking>> latestBookings(String[] roomNumbers);
+	public List<Room> roomsAvailableForCancelling() throws SQLException;
 }

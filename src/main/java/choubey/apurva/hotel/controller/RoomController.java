@@ -3,6 +3,7 @@ package choubey.apurva.hotel.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -42,11 +43,10 @@ public class RoomController {
 				session.setAttribute("rooms", rooms);
 				Date bookFromDate = Date.valueOf(bookFrom);
 				Date bookTillDate = Date.valueOf(bookTill);
-				if(bookFromDate.after(bookTillDate)) {
+				if (bookFromDate.after(bookTillDate)) {
 					session.setAttribute("bookFrom", bookTillDate);
 					session.setAttribute("bookTill", bookFromDate);
-				}
-				else {
+				} else {
 					session.setAttribute("bookFrom", bookFromDate);
 					session.setAttribute("bookTill", bookTillDate);
 				}
@@ -56,5 +56,22 @@ public class RoomController {
 				System.out.println("Something went wrong while displaying rooms");
 			}
 		}
+	}
+
+	public void roomsAvailableForRemoving(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		List<Room> rooms = null;
+		try {
+			rooms = roomService.roomsAvailableForCancelling();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			response.getWriter().println("<center><h3 style=\"color:blue\">Couldn't fetch rooms available for removal. Please try after sometime</h3></center>");
+			request.getRequestDispatcher("/index").include(request, response);
+			return;
+		}
+		
+		request.getSession().setAttribute("cancelableRooms", rooms);
+		request.getRequestDispatcher("/roomsAvailableForCancellation").forward(request, response);
+		return;
 	}
 }
