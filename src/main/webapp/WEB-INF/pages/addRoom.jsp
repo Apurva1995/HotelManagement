@@ -6,9 +6,12 @@
 
 <%
 	addRoomControllerPath = request.getContextPath() + "/controller/user/addRoom";
-	if (((User)session.getAttribute("user")).getIsAdmin() != (short)1) {
-		response.sendRedirect(request.getContextPath() + "/index");
-		return;
+	if ((User) session.getAttribute("user") != null) {
+
+		if (((User) session.getAttribute("user")).getIsAdmin() != (short) 1) {
+			response.sendRedirect(request.getContextPath() + "/index");
+			return;
+		}
 	}
 %>
 
@@ -19,7 +22,9 @@
 </head>
 <body>
 	<%@include file="header.jsp"%>
-	<br><br><br>
+	<br>
+	<br>
+	<br>
 	<center>
 		<form action=<%=addRoomControllerPath%> method="post">
 			<h3>

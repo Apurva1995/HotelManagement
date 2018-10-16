@@ -11,6 +11,7 @@
 	String roomDetailsPath;
 	String logoutPath;
 	String addRoomPath;
+	String fetchUserBookings;
 %>
 
 <%
@@ -22,6 +23,7 @@
 	roomDetailsPath = contextPath + "/roomDetails";
 	addRoomPath = contextPath + "/addRoom";
 	logoutPath = contextPath + "/controller/user/logout";
+	fetchUserBookings = contextPath + "/controller/user/bookings";
 %>
 
 <html>
@@ -48,6 +50,7 @@
 				<li><a class="navlink" href=<%= roomDetailsPath%>>Remove Rooms</a></li>
 			</c:if>
 			<li><a class="navlink" href=<%= roomDetailsPath%>>Book Rooms</a></li>
+			<li><a class="navlink" href=<%= fetchUserBookings%>>Cancel Bookings</a></li>
 			<li class="navlink float-right"><a class="navlink_right" href=<%= logoutPath%>>Logout</a></li>
 			<li class="navlink float-right">Welcome : <c:out value="${sessionScope.user.userName }"/> </li>
 		</c:if>

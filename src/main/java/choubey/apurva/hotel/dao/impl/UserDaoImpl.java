@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import choubey.apurva.hotel.dao.UserDao;
+import choubey.apurva.hotel.model.Booking;
 import choubey.apurva.hotel.model.Room;
 import choubey.apurva.hotel.model.User;
 import choubey.apurva.hotel.util.DBConnectionProvider;
@@ -125,6 +126,61 @@ public class UserDaoImpl implements UserDao {
 		}
 
 		return false;
+	}
+
+	@Override
+	public List<Booking> fetchBookings(String userAadhar) throws SQLException {
+		
+		String query = "select * from booking where userAadhar = ?";
+		List<Booking> bookings = new ArrayList<>();
+		
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			
+			preparedStatement.setString(1, userAadhar);
+			try(ResultSet resultSet = preparedStatement.executeQuery()) {
+				
+				while(resultSet.next()) {
+					
+					Booking booking = new Booking(resultSet.getLong(1), resultSet.getString(2), resultSet.getDate(3), resultSet.getDate(4), resultSet.getString(5));
+					bookings.add(booking);
+				}
+			}
+			
+		}
+		
+		return bookings;
+	}
+
+	@Override
+	public boolean cancelBookings(String[] bookingIds) throws SQLException {
+		
+		String query = "Delete from booking where id=?";
+		
+		try (Connection connection = DBConnectionProvider.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			
+			for(int i=0;i<bookingIds.length;i++) {
+				
+				preparedStatement.setLong(1, Long.valueOf(bookingIds[i]));
+				preparedStatement.addBatch();
+			}
+			
+			connection.setAutoCommit(false);
+			connection.setSavepoint();
+			int result[] = preparedStatement.executeBatch();
+			for(int i=0;i<result.length;i++) {
+				
+				if(result[i] != 1) {
+					
+					connection.rollback();
+					throw new SQLException();
+				}
+			}
+			connection.commit();
+		}
+		
+		return true;
 	}
 
 }

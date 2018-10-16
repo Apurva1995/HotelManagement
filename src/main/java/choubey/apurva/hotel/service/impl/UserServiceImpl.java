@@ -67,4 +67,16 @@ public class UserServiceImpl implements UserService {
 		return userDao.addRoom(roomNumber, roomType, roomCapacity, availability);
 	}
 
+	@Override
+	public List<Booking> fetchBookings(String userAadhar) throws SQLException {
+		
+		return userDao.fetchBookings(userAadhar);
+	}
+
+	@Override
+	public boolean cancelBookings(String[] bookingIds) throws SQLException {
+		
+		return userDao.cancelBookings(bookingIds);
+	}
+
 }

@@ -58,6 +58,15 @@ public class ServiceFrontController extends HttpServlet {
 				else
 					request.getRequestDispatcher("/showRooms").forward(request, response);
 				break;
+			case "bookings":
+				userController.userBookings(request, response);
+				break;
+			case "cancel":
+				userController.userBookings(request, response);
+				break;
+			case "addRoom":
+				request.getRequestDispatcher("/addRoom").forward(request, response);
+				break;
 			case "logout":
 				userController.logout(request, response);
 				break;
@@ -127,6 +136,9 @@ public class ServiceFrontController extends HttpServlet {
 			break;
 		case "addRoom":
 			userController.addRoom(request, response);
+			break;
+		case "cancel":
+			userController.cancelBooking(request, response);
 			break;
 		}
 	}

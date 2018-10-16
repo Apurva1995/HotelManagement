@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import choubey.apurva.hotel.model.Booking;
 import choubey.apurva.hotel.model.User;
 import choubey.apurva.hotel.service.RoomService;
 import choubey.apurva.hotel.service.UserService;
@@ -181,6 +182,56 @@ public class UserController {
 			response.getWriter().println("<Center><h3 style=\"color:blue\">Something went wrong while adding room. Please try again</h3></center>");
 		}
 			
+	}
+	
+	public void userBookings(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String userAadhar = ((User)request.getSession().getAttribute("user")).getAadharNumber();
+		List<Booking> bookings = null;
+		
+		try {
+			bookings = userService.fetchBookings(userAadhar);
+			request.getSession().setAttribute("bookings", bookings);
+			request.getRequestDispatcher("/showBookings").forward(request, response);
+		}catch (SQLException e) {
+			e.printStackTrace();
+			request.getRequestDispatcher("/index").include(request, response);
+			response.getWriter().println("<br><br><Center><h3 style=\"color:blue\">Coudn't fetch the bookings. Please try after some time</h3></center>");
+			return;
+		}
+	}
+	
+	public void cancelBooking(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String bookingIds[] = request.getParameterValues("userBookings");
+		
+		if(bookingIds == null) {
+			request.getRequestDispatcher("/showBookings").include(request, response);
+			response.getWriter().println("<br><br><Center><h3 style=\"color:blue\">Please select one to cancel</h3></center>");
+			return;
+		}
+		
+		boolean result = false;
+		try {
+			result = userService.cancelBookings(bookingIds);
+		}catch (SQLException e) {
+			e.printStackTrace();
+			request.getRequestDispatcher("/showBookings").include(request, response);
+			response.getWriter().println("<br><br><Center><h3 style=\"color:blue\">Couldn't cancel bookings. Please try after sometimes</h3></center>");
+			return;
+		}
+		if(result) {
+			request.getSession().removeAttribute("bookings");
+			request.getRequestDispatcher("/cancellationSuccess").include(request, response);
+			if(bookingIds.length == 1)
+				response.getWriter().println("<br><br><Center><h3 style=\"color:blue\">Booking has been cancelled</h3></center>");
+			else
+				response.getWriter().println("<br><br><Center><h3 style=\"color:blue\">Bookings have been cancelled</h3></center>");
+		}
+		else {
+			request.getRequestDispatcher("/showBookings").include(request, response);
+			response.getWriter().println("<br><br><Center><h3 style=\"color:blue\">Couldn't cancel bookings. Please try after sometimes</h3></center>");
+		}
 	}
 	
 	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
