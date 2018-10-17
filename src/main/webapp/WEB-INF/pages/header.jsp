@@ -12,6 +12,7 @@
 	String logoutPath;
 	String addRoomPath;
 	String fetchUserBookings;
+	String fetchRoomsAvailableForRemoving;
 %>
 
 <%
@@ -24,6 +25,7 @@
 	addRoomPath = contextPath + "/addRoom";
 	logoutPath = contextPath + "/controller/user/logout";
 	fetchUserBookings = contextPath + "/controller/user/bookings";
+	fetchRoomsAvailableForRemoving = contextPath + "/controller/room/availableForRemoving";
 %>
 
 <html>
@@ -47,7 +49,7 @@
 		<c:if test="${not empty sessionScope.user}">
 			<c:if test="${sessionScope.user.isAdmin == 1 }">
 				<li><a class="navlink" href=<%= addRoomPath%>>Add Rooms</a></li>
-				<li><a class="navlink" href=<%= roomDetailsPath%>>Remove Rooms</a></li>
+				<li><a class="navlink" href=<%= fetchRoomsAvailableForRemoving%>>Remove Rooms</a></li>
 			</c:if>
 			<li><a class="navlink" href=<%= roomDetailsPath%>>Book Rooms</a></li>
 			<li><a class="navlink" href=<%= fetchUserBookings%>>Cancel Bookings</a></li>

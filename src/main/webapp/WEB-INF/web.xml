@@ -102,6 +102,15 @@
 		<url-pattern>/cancellationSuccess</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>roomsAvailableForCancellation</servlet-name>
+		<jsp-file>/WEB-INF/pages/roomsAvailableForCancellation.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>roomsAvailableForCancellation</servlet-name>
+		<url-pattern>/roomsAvailableForCancellation</url-pattern>
+	</servlet-mapping>
+	
 	<!-- Mapping of Front controller -->
 	<!-- <servlet>
 		<servlet-name>ServiceFrontController</servlet-name>

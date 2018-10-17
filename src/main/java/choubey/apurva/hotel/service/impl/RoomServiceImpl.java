@@ -1,6 +1,7 @@
 package choubey.apurva.hotel.service.impl;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,13 @@ public class RoomServiceImpl implements RoomService {
 	@Override
 	public Map<String, List<Booking>> latestBookings(String[] roomNumbers) {
 		return roomDao.latestBookings(roomNumbers);
+	}
+
+
+
+	@Override
+	public List<Room> roomsAvailableForCancelling() throws SQLException {
+		return roomDao.roomsAvailableForCancelling();
 	}
 
 }
